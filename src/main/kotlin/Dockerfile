@@ -1,11 +1,11 @@
-# Build stage - multi-arch base
+# Build stage - uses Gradle with JDK 17 (multi-arch)
 FROM gradle:8.5-jdk17 AS build
 WORKDIR /app
 COPY build.gradle.kts settings.gradle.kts ./
 COPY src ./src
 RUN gradle build --no-daemon
 
-# Runtime stage - use plain JRE (supports arm64 + amd64)
+# Runtime stage - uses plain JRE 17 (multi-arch, NO alpine)
 FROM eclipse-temurin:17-jre
 WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
